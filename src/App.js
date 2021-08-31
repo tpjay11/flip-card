@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState, useRef} from 'react';
 import './App.css';
 import initializeDeck from './deck';
 import Board from './components/Board';
@@ -14,8 +14,7 @@ function App() {
   const [score, setScore] = useState(0)
   const [timer, setTimer] = useState(60);
 
-  console.log(flippedCards);
-  console.log(resolvedCards)
+  const timerRef = useRef()
 
   function findCard(cardId) {
     return cards.find(card => card.id === cardId)
@@ -36,35 +35,40 @@ function App() {
   function findFlippedNoMatchCards () {
     return flippedCards.filter((id) =>  !resolvedCards.includes(id))
   }
-
+  function updateScore () {
+    const increaseScore = Math.pow(level, 2) + timer
+    setScore(score => score + increaseScore)
+  }
   function endGame () {
     alert(score)
+    setDisabled(true)
   }
+
   useEffect(() => {
-    setCards(initializeDeck(1))
-  },[])
-  useEffect(() => {
-    console.log('useEffect');
-    if (newGame) {
-      let clockID = setInterval(() => {
-        console.log(timer)
+
+    if (newGame && playGame) {
+        timerRef.current = setInterval(() => {
         setTimer(timer => {
-          if (timer === 55) {
-            clearInterval(clockID);
+
+          if (timer === 0) {
+            setPlayGame(false)
             return timer
           } else {
             return timer - 1
           }
         })
       },1000)
+
     }
-    return () => {
-      console.log(123)
+    if (playGame === false) {
+      clearInterval(timerRef.current);
+
+      endGame()
     }
-  }, [newGame])
+  }, [newGame, playGame])
   const handleClick = (evt) => {
     let clickCardId = +evt.currentTarget.id
-    console.log(clickCardId)
+
     
     // debugger
     if (!resolvedCards.includes(clickCardId) && !disabled) {
@@ -88,6 +92,7 @@ function App() {
           } else {
             setFlippedCards([...flippedCards, clickCardId]);
             setResolvedCards([...resolvedCards, ...has_match])
+            updateScore();
           }
       } else {
          const copyFlippedCards = flippedCards.filter(cardId => cardId !== clickCardId)
@@ -105,6 +110,28 @@ function App() {
     setNewGame(true)
 
   }
+  const handlePlayGameClick = (evt) => {
+      setPlayGame(!playGame)
+  }
+  function reset() {
+    setLevel(1);
+    setCards([])
+    setFlippedCards([])
+    setResolvedCards([])
+    setPlayGame(true)
+    setScore(0)
+    setTimer(60)
+  }
+  function startGame() {
+    reset()
+    setCards(initializeDeck(level))
+    setDisabled(false)
+  }
+  useEffect(() => {
+    if (playGame=== true) {
+        startGame()
+    } 
+  }, [playGame])
   return (
     <div className="App">
       <h1 className="game-title">The classic MeMmmm Game</h1>
@@ -118,7 +145,7 @@ function App() {
           <div className="game-stats__score--value">{score}</div>
         </div>
         {newGame ? (
-          <button className="game-stats__button" type="button" >
+          <button className="game-stats__button" type="button" onClick = {handlePlayGameClick}>
             {playGame ? 'End Game': 'Start Game'}
           </button>
         ) : (
@@ -128,7 +155,7 @@ function App() {
         )}
       </div>
       <div className="game-timer">
-        <div className="game-timer__bar">{timer}s</div>
+        <div className="game-timer__bar" style={{width: `${timer*100/60}%`}}>{timer}s</div>
       </div>
       {newGame ? (
         <Board
