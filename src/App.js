@@ -119,9 +119,12 @@ function App() {
 
   // 如果全部图片配对成功，游戏结束
   useEffect(() => {
-    if (cards.length === resolvedCards.length) {
-      // move to next level
-      setPlayGame(false)
+    if (cards.length === resolvedCards.length && resolvedCards.length !== 0) {
+      // 完整版 move to next level
+      // 现阶段游戏结束 提示分数
+      setTimeout(() => {
+        setPlayGame(false)
+      },1000) 
 
     }
   }, [resolvedCards])
