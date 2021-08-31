@@ -4,6 +4,15 @@ import initializeDeck from './deck';
 import Board from './components/Board';
 
 function App() {
+/*
+  flippedCards 数组 包含所有翻面的卡的ID 包括已经配对成功地
+  resolvedCards 数组 包含所有配对成功卡的ID
+  disabled  卡片点击是否有效
+  newGame 开始新的游戏，从instruction 到游戏界面
+  playGame 游戏进行中还是停止的状态
+  score 得分
+  timer 计时器 剩余时间
+*/
   const [level, setLevel] = useState(1);
   const [cards, setCards] = useState([]);
   const [flippedCards, setFlippedCards] = useState([])
@@ -16,10 +25,12 @@ function App() {
 
   const timerRef = useRef()
 
+  // 根据id找到卡片
   function findCard(cardId) {
     return cards.find(card => card.id === cardId)
   }
 
+  // 当前点击卡是否配对成功
   function hasMatch (clickCardId) {
     const clickCard = findCard(clickCardId);
     let matchCardId = flippedCards.find(id => {
@@ -32,15 +43,19 @@ function App() {
       return [clickCardId,matchCardId]
     }
   } 
+
+  // 排除翻面卡中配对成功地卡， 不是 0张 就是 1。 为0 当前卡就保持翻开， 为1 则两张都翻过去
   function findFlippedNoMatchCards () {
     return flippedCards.filter((id) =>  !resolvedCards.includes(id))
   }
+
   function updateScore () {
     const increaseScore = Math.pow(level, 2) + timer
     setScore(score => score + increaseScore)
   }
+
   function endGame () {
-    alert(score)
+    alert(`Congratulations, your score is ${score}`)
     setDisabled(true)
   }
 
@@ -62,15 +77,15 @@ function App() {
     }
     if (playGame === false) {
       clearInterval(timerRef.current);
-
       endGame()
     }
   }, [newGame, playGame])
+
+  // 处理卡片点击事件
   const handleClick = (evt) => {
     let clickCardId = +evt.currentTarget.id
 
-    
-    // debugger
+
     if (!resolvedCards.includes(clickCardId) && !disabled) {
       
       if (!flippedCards.includes(clickCardId)) {
@@ -100,19 +115,29 @@ function App() {
       }
 
     }
-
-
-
-
   }
 
+  // 如果全部图片配对成功，游戏结束
+  useEffect(() => {
+    if (cards.length === resolvedCards.length) {
+      // move to next level
+      setPlayGame(false)
+
+    }
+  }, [resolvedCards])
+
+  // 开始游戏按钮点击事件
   const handleNewGameClick = (evt) => {
     setNewGame(true)
 
   }
+
+  // PLAY OR STOP 按钮点击事件
   const handlePlayGameClick = (evt) => {
       setPlayGame(!playGame)
   }
+
+  // 重置数据
   function reset() {
     setLevel(1);
     setCards([])
@@ -122,6 +147,8 @@ function App() {
     setScore(0)
     setTimer(60)
   }
+
+  // 开始游戏
   function startGame() {
     reset()
     setCards(initializeDeck(level))
@@ -132,6 +159,7 @@ function App() {
         startGame()
     } 
   }, [playGame])
+
   return (
     <div className="App">
       <h1 className="game-title">The classic MeMmmm Game</h1>

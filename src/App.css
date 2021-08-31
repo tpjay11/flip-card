@@ -1,6 +1,6 @@
 @font-face {
   font-family: "neuropol";
-  src: url("fonts/neuropol.woff") format("woff"), url("fonts/neuropol.ttf") format("truetype");
+  src: url("static/fonts/neuropol.woff") format("woff"), url("static/fonts/neuropol.ttf") format("truetype");
 }
 html {
   box-sizing: border-box;
@@ -106,7 +106,7 @@ body {
 }
 .card__face--front {
   background: #f16a70;
-  background-image: url("./icons/m.png");
+  background-image: url("./static/icons/m.png");
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -114,34 +114,34 @@ body {
   transform: rotateY(180deg);
 }
 .card.html5 .card__face--back {
-  background-image: url("./icons/html5.svg");
+  background-image: url("./static/icons/html5.svg");
 }
 .card.css3 .card__face--back {
-  background-image: url("./icons/css3.svg");
+  background-image: url("./static/icons/css3.svg");
 }
 .card.js .card__face--back {
-  background-image: url("./icons/js.svg");
+  background-image: url("./static/icons/js.svg");
 }
 .card.react .card__face--back {
-  background-image: url("./icons/react.svg");
+  background-image: url("./static/icons/react.svg");
 }
 .card.nodejs .card__face--back {
-  background-image: url("./icons/nodejs.svg");
+  background-image: url("./static/icons/nodejs.svg");
 }
 .card.sass .card__face--back {
-  background-image: url("./icons/sass.svg");
+  background-image: url("./static/icons/sass.svg");
 }
 .card.linkedin .card__face--back {
-  background-image: url("./icons/linkedin.svg");
+  background-image: url("./static/icons/linkedin.svg");
 }
 .card.heroku .card__face--back {
-  background-image: url("./icons/heroku.svg");
+  background-image: url("./static/icons/heroku.svg");
 }
 .card.github .card__face--back {
-  background-image: url("./icons/github.svg");
+  background-image: url("./static/icons/github.svg");
 }
 .card.aws .card__face--back {
-  background-image: url("./icons/aws.svg");
+  background-image: url("./static/icons/aws.svg");
 }
 
 /*# sourceMappingURL=style.css.map */
